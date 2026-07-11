@@ -1,16 +1,28 @@
 # Ticking Type Bomb 💣⌨️
+
 A localized, event-driven alarm clock built to defeat sleep inertia by physically decoupling the siren from the off-switch. 
 
 ## The Problem
-Standard mobile alarms fail because the off-switch is in bed with you. When sleep inertia hits, the brain treats the "Snooze" or "Dismiss" button as the path of least resistance. Even puzzle-based alarm apps didn't work for me—I needed multiple layers of friction, but the best features on the market were locked behind subscriptions.
+Standard mobile alarms fail because the off-switch is in bed with you. When sleep inertia hits, the brain treats the "Snooze" or "Dismiss" button as the path of least resistance. Even puzzle-based alarm apps didn't work for me. I needed multiple layers of friction, but the best features on the market were locked behind subscriptions.
 
 **The Goal:** Build a zero-cost system where the phone acts strictly as a "dumb speaker" and the only way to kill the alarm is by passing a strict cognitive typing test on a separate device across the room.
 
 ## The Architecture
 The system relies on a basic Client-Server model running over a local Wi-Fi network (LAN), turning two distinct devices into a single closed-loop system.
 
-*   **The Siren (Android / Server):** Built using the Automate app. A scheduled fiber triggers the audio loop at the target wake-up time. The flow then pauses at an HTTP Webhook listener, waiting for a specific `fetch` request on the local IP to kill the sound and close the connection.
-*   **The Key (Laptop / Client):** A vanilla HTML/JS frontend that forces the user to accurately type a randomized, complex paragraph. Once the string exactly matches the target, the browser fires an HTTP `POST` request to the phone's local IP.
+### 1. The Siren (Android / Server)
+Built using the Automate app. Instead of a traditional backend script, the "server" is a node-based flowchart running as a background fiber. 
+*(See `flowchart.jpeg` in the repo for the visual node tree)*
+
+**The Event Loop:**
+1. **Time Await:** Pauses the thread, utilizing standard Android OS alarms to preserve battery until the target wake-up time.
+2. **Audio Play:** Starts looping the alarm siren (configured as non-blocking async I/O).
+3. **HTTP Webhook Request:** Opens a local port and freezes the thread, acting as an event listener waiting for a specific request from the laptop.
+4. **Audio Stop:** The kill-switch, triggered instantly when the webhook receives the payload.
+5. **HTTP Webhook Response:** Sends a `200 OK` receipt back to the laptop to gracefully close the connection and avoid a `500 Internal Server Error`.
+
+### 2. The Key (Laptop / Client)
+A vanilla HTML/JS frontend that forces the user to accurately type a randomized, complex paragraph. Once the string exactly matches the target, the browser fires an HTTP `GET`/`POST` request to the phone's local IP to trigger the webhook.
 
 ## Anti-Cheat Mechanics & UX
 To prevent a sleep-deprived brain from bypassing the test, the UI enforces strict friction rules:
