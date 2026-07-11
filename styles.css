@@ -1,0 +1,72 @@
+:root {
+  --bg-color: #1a1918; /* Deep charcoal/brown earth tone */
+  --text-main: #d4cec4; /* Muted bone white */
+  --accent: #5c604b; /* Muted olive green */
+  --panel-bg: rgba(255, 255, 255, 0.03);
+  --error-bg: #3b1f1f; /* Dark muted red for the flash */
+  --error-border: #cc3333;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  /* Monospace font aligns characters perfectly for typing tests */
+  font-family: 'Courier New', Courier, monospace; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden; /* Removes scrollbars */
+  box-sizing: border-box;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+#target {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background-color: var(--panel-bg);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent);
+  /* Extra anti-cheat: physically prevents highlighting the text with a mouse */
+  user-select: none; 
+}
+
+#typer {
+  width: 100%;
+  max-width: 800px;
+  padding: 1.5rem;
+  font-size: 1.2rem;
+  font-family: inherit;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 2px solid #2d2b28;
+  color: var(--text-main);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#typer:focus {
+  border-color: var(--accent);
+}
+
+/* Overriding your flash-red class with theme-appropriate colors */
+.flash-red {
+  background-color: var(--error-bg) !important;
+  border-color: var(--error-border) !important;
+  color: #fff !important;
+  transition: none !important; /* Instant snap to red, smooth fade back */
+}
