@@ -14,6 +14,8 @@ The system relies on a basic Client-Server model running over a local Wi-Fi netw
 Built using the Automate app. Instead of a traditional backend script, the "server" is a node-based flowchart running as a background fiber. 
 *(See `flowchart.jpeg` in the repo for the visual node tree)*
 
+<img width="712" height="1600" alt="flowchart" src="https://github.com/user-attachments/assets/51a08024-f311-4c3b-8e20-d3723d73e0e7" />
+
 **The Event Loop:**
 1. **Time Await:** Pauses the thread, utilizing standard Android OS alarms to preserve battery until the target wake-up time.
 2. **Audio Play:** Starts looping the alarm siren (configured as non-blocking async I/O).
